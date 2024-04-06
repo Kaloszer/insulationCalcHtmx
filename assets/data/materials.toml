@@ -1,0 +1,42 @@
+[[insulation]]
+created_by = 1337
+name = "Insulation A"
+lambda = 0.035
+price = 10.99
+description = "This is insulation A."
+
+[[insulation]]
+created_by = 1337
+name = "Insulation B"
+lambda = 0.040
+price = 12.99
+description = "This is insulation B."
+
+
+[[insulation]]
+created_by = 1337
+name = "Insulation C"
+lambda = 0.045
+price = 14.99
+description = "This is insulation C."
+
+[[other]]
+created_by = 1337
+name = "Other A"
+lambda = 0.35
+price = 5.99
+description = "This is other A."
+
+[[other]]
+created_by = 1337
+name = "Other B"
+lambda = 0.40
+price = 7.99
+description = "This is other B."
+
+[[wall]]
+created_by = 1337
+name = "Wall A"
+lambda = 0.15
+price = 20.99
+description = "This is wall A."

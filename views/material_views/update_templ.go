@@ -71,7 +71,7 @@ func UpdateIndex(material models.Material) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</textarea></label> <label class=\"flex flex-col justify-start gap-2\">Lambda: <textarea class=\"textarea textarea-primary h-36 max-h-36 bg-slate-800\" name=\"lambda\" minlength=\"1\" maxlength=\"5\" placeholder=\"0.019\"></textarea></label><footer class=\"card-actions flex justify-between\"><div class=\"flex gap-4\"><button class=\"badge badge-primary p-4 hover:scale-[1.1]\">Update</button> <a href=\"/material/list\" class=\"badge badge-neutral p-4 hover:scale-[1.1]\">Cancel</a></div></footer></form></section>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</textarea></label> <label class=\"flex flex-col justify-start gap-2\">Lambda: <textarea class=\"textarea textarea-primary h-36 max-h-36 bg-slate-800\" name=\"lambda\" minlength=\"1\" maxlength=\"5\" placeholder=\"0.019\" description=\"Thermal conductivity - lambda\"></textarea></label> <label class=\"flex flex-col justify-start gap-2\">Price: <textarea class=\"textarea textarea-primary h-36 max-h-36 bg-slate-800\" name=\"price\" minlength=\"1\" maxlength=\"10\" placeholder=\"21.37\" description=\"Price per square meter\"></textarea></label><footer class=\"card-actions flex justify-between\"><div class=\"flex gap-4\"><button class=\"badge badge-primary p-4 hover:scale-[1.1]\">Update</button> <a href=\"/material/list\" class=\"badge badge-neutral p-4 hover:scale-[1.1]\">Cancel</a></div></footer></form></section>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

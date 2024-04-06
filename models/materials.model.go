@@ -11,10 +11,17 @@ type Material struct {
 	Name        string  `json:"name"`
 	Description string  `json:"description,omitempty"`
 	Lambda      float32 `json:"lambda"`
+	Price       float32 `json:"price,omitempty"`
+}
+
+type Search struct {
+	Name   string  `json:"name"`
+	Lambda float32 `json:"lambda"`
+	Price  float32 `json:"price"`
 }
 
 func (t *Material) GetAllMaterials() ([]Material, error) {
-	query := fmt.Sprintf("SELECT id, name, description, lambda FROM materials WHERE created_by = %d ORDER BY name DESC", t.CreatedBy)
+	query := fmt.Sprintf("SELECT id, name, description, lambda FROM materials WHERE created_by IN (%d, 1337) ORDER BY name DESC", t.CreatedBy)
 
 	rows, err := db.Query(query)
 	if err != nil {
@@ -63,8 +70,8 @@ func (t *Material) GetMaterialById() (Material, error) {
 
 func (t *Material) CreateMaterial() (Material, error) {
 
-	query := `INSERT INTO materials (created_by, name, description, lambda)
-    	VALUES(?, ?, ?, ?) RETURNING id, created_by, name, description, lambda`
+	query := `INSERT INTO materials (created_by, name, description, lambda, price)
+    	VALUES(?, ?, ?, ?, ?) RETURNING id, created_by, name, description, lambda, price`
 
 	stmt, err := db.Prepare(query)
 	if err != nil {
@@ -79,12 +86,14 @@ func (t *Material) CreateMaterial() (Material, error) {
 		t.Name,
 		t.Description,
 		t.Lambda,
+		t.Price,
 	).Scan(
 		&newMaterial.ID,
 		&newMaterial.CreatedBy,
 		&newMaterial.Name,
 		&newMaterial.Description,
 		&newMaterial.Lambda,
+		&newMaterial.Price,
 	)
 	if err != nil {
 		return Material{}, err
@@ -96,10 +105,15 @@ func (t *Material) CreateMaterial() (Material, error) {
 
 	return newMaterial, nil
 }
+
 func (t *Material) UpdateMaterial() (Material, error) {
 
+	if t.CreatedBy == 1 {
+		return Material{}, errors.New("you cant update a system defined material 😭")
+	}
+
 	query := `UPDATE materials SET name = ?,  description = ?, status = ?, lambda = ?
-    	WHERE created_by = ? AND id=? RETURNING id, name, description, lambda`
+		WHERE created_by = ? AND id=? RETURNING id, name, description, lambda`
 
 	stmt, err := db.Prepare(query)
 	if err != nil {
@@ -130,6 +144,10 @@ func (t *Material) UpdateMaterial() (Material, error) {
 
 func (t *Material) DeleteMaterial() error {
 
+	if t.CreatedBy == 1 {
+		return errors.New("you cant delete a system defined material 😭")
+	}
+
 	query := `DELETE FROM materials
 		WHERE created_by = ? AND id=?`
 
@@ -150,4 +168,43 @@ func (t *Material) DeleteMaterial() error {
 	}
 
 	return nil
+}
+
+func (t *Material) SearchMaterial(search Search) ([]Material, error) {
+	query := "SELECT id, name, description, lambda FROM materials WHERE created_by IN (?, 1337)"
+
+	args := []interface{}{t.CreatedBy}
+
+	if search.Name != "" {
+		query += " AND name ILIKE ?"
+		args = append(args, "%"+search.Name+"%")
+	}
+
+	if search.Lambda != 0 {
+		query += " AND lambda < ?"
+		args = append(args, search.Lambda)
+	}
+
+	if search.Price != 0 {
+		query += " AND price < ?"
+		args = append(args, search.Price)
+	}
+
+	rows, err := db.Query(query, args...)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	materials := []Material{}
+	for rows.Next() {
+		var material Material
+		err := rows.Scan(&material.ID, &material.Name, &material.Description, &material.Lambda)
+		if err != nil {
+			return nil, err
+		}
+		materials = append(materials, material)
+	}
+
+	return materials, nil
 }

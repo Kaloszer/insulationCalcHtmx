@@ -25,6 +25,7 @@ templ MaterialIndex(materials []models.Material) {
 					<th></th>
 					<th>Material</th>
 					<th>Lambda</th>
+					<th>Price</th>
 					<th class="text-center">Options</th>
 				</tr>
 			</thead>
@@ -35,6 +36,7 @@ templ MaterialIndex(materials []models.Material) {
 							<th>{ strconv.Itoa(int(Material.ID)) }</th>
 							<td>{ Material.Name }</td>
 							<td>{ templ.JoinStringErrs(strconv.FormatFloat(float64(Material.Lambda), 'f', -1, 32)) }</td>
+							<td>{ templ.JoinStringErrs(strconv.FormatFloat(float64(Material.Price), 'f', -1, 32)) }</td>
 							<td class="flex justify-center gap-2">
 								<a
  									hx-swap="transition:true"
