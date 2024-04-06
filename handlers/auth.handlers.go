@@ -6,11 +6,11 @@ import (
 	"strings"
 
 	"github.com/a-h/templ"
-	"github.com/emarifer/gofiber-templ-htmx/models"
-	"github.com/emarifer/gofiber-templ-htmx/views"
-	"github.com/emarifer/gofiber-templ-htmx/views/auth_views"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/adaptor"
+	"github.com/kaloszer/insulationcalchtmx/models"
+	"github.com/kaloszer/insulationcalchtmx/views"
+	"github.com/kaloszer/insulationcalchtmx/views/auth_views"
 	"github.com/sujit-baniya/flash"
 	"golang.org/x/crypto/bcrypt"
 )

@@ -5,7 +5,7 @@ go 1.21.0
 require github.com/gofiber/fiber/v2 v2.51.0
 
 require (
-	github.com/a-h/templ v0.2.476 // indirect
+	github.com/a-h/templ v0.2.648 // indirect
 	github.com/gofiber/template v1.8.2 // indirect
 	github.com/gofiber/utils v1.1.0 // indirect
 )

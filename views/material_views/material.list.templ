@@ -1,4 +1,4 @@
-package todo_views
+package material_views
 
 import (
 	"fmt"
@@ -6,16 +6,17 @@ import (
 
 	"github.com/kaloszer/insulationcalchtmx/models"
 	"github.com/kaloszer/insulationcalchtmx/views"
+	"github.com/kaloszer/insulationcalchtmx/views"
 
 	"github.com/gofiber/fiber/v2"
 )
 
-templ TodoIndex(todos []models.Todo) {
+templ MaterialIndex(materials []models.Material) {
 	<div class="flex justify-between max-w-2xl mx-auto border-b border-b-slate-600 mb-8 pb-2">
 		<h1 class="text-2xl font-bold text-center">
-			My Tasks List
+			Material list
 		</h1>
-		<a hx-swap="transition:true" class="badge badge-info p-4 hover:scale-[1.1]" href="/todo/create">
+		<a hx-swap="transition:true" class="badge badge-info p-4 hover:scale-[1.1]" href="/material/create">
 			New
 		</a>
 	</div>
@@ -25,36 +26,29 @@ templ TodoIndex(todos []models.Todo) {
 			<thead class="bg-slate-700">
 				<tr>
 					<th></th>
-					<th>Tasks</th>
-					<th>Status</th>
+					<th>Materials</th>
+					<th>Lambda</th>
 					<th class="text-center">Options</th>
 				</tr>
 			</thead>
-			if len(todos) != 0 {
+			if len(materials) != 0 {
 				<tbody>
-					for _, todo := range todos {
+					for _, Material := range materials {
 						<tr>
-							<th>{ strconv.Itoa(int(todo.ID)) }</th>
-							<td>{ todo.Title }</td>
-							<td>
-								if todo.Status {
-									✅
-								} else {
-									❌
-								}
-							</td>
+							<th>{ strconv.Itoa(int(Material.ID)) }</th>
+							<td>{ Material.Name }</td>
 							<td class="flex justify-center gap-2">
 								<a
  									hx-swap="transition:true"
- 									href={ templ.URL(fmt.Sprintf("/todo/edit/%d", todo.ID)) }
+ 									href={ templ.URL(fmt.Sprintf("/Material/edit/%d", Material.ID)) }
  									class="badge badge-primary p-3 hover:scale-[1.1]"
 								>
 									Edit
 								</a>
 								<button
  									hx-swap="transition:true"
- 									hx-delete={ fmt.Sprintf("/todo/delete/%d", todo.ID) }
- 									hx-confirm={ fmt.Sprintf("Are you sure you want to delete the task with ID #%d?", todo.ID) }
+ 									hx-delete={ fmt.Sprintf("/Material/delete/%d", Material.ID) }
+ 									hx-confirm={ fmt.Sprintf("Are you sure you want to delete the material with ID #%d?", Material.ID) }
  									hx-target="body"
  									class="badge badge-error p-3 hover:scale-[1.1]"
 								>
@@ -68,7 +62,7 @@ templ TodoIndex(todos []models.Todo) {
 				<tbody>
 					<tr>
 						<td colspan="4" align="center">
-							You do not have anything to do
+							You have no materials defined
 						</td>
 					</tr>
 				</tbody>
@@ -77,7 +71,7 @@ templ TodoIndex(todos []models.Todo) {
 	</section>
 }
 
-templ TodoList(
+templ MaterialList(
         page string,
         fromProtected bool,
         msg fiber.Map,

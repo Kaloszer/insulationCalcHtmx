@@ -3,8 +3,8 @@ package main
 import (
 	"log"
 
-	"github.com/emarifer/gofiber-templ-htmx/handlers"
-	"github.com/emarifer/gofiber-templ-htmx/models"
+	"github.com/kaloszer/insulationcalchtmx/handlers"
+	"github.com/kaloszer/insulationcalchtmx/models"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/logger"
