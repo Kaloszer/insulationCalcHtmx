@@ -11,7 +11,7 @@ import "io"
 import "bytes"
 
 import (
-	"github.com/kaloszer/insulationcalchtmx/views"
+	"github.com/kaloszer/insulationCalcHtmx/views"
 
 	"github.com/gofiber/fiber/v2"
 )

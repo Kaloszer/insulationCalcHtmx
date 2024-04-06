@@ -12,12 +12,10 @@ import "bytes"
 
 import (
 	"fmt"
-	"strconv"
-
-	"github.com/kaloszer/insulationcalchtmx/models"
-	"github.com/kaloszer/insulationcalchtmx/views"
-
 	"github.com/gofiber/fiber/v2"
+	"github.com/kaloszer/insulationCalcHtmx/models"
+	"github.com/kaloszer/insulationCalcHtmx/views"
+	"strconv"
 )
 
 func MaterialIndex(materials []models.Material) templ.Component {
@@ -50,7 +48,7 @@ func MaterialIndex(materials []models.Material) templ.Component {
 				var templ_7745c5c3_Var2 string
 				templ_7745c5c3_Var2, templ_7745c5c3_Err = templ.JoinStringErrs(strconv.Itoa(int(Material.ID)))
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `material.list.templ`, Line: 37, Col: 43}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `material_views/material.list.templ`, Line: 35, Col: 43}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var2))
 				if templ_7745c5c3_Err != nil {
@@ -63,7 +61,7 @@ func MaterialIndex(materials []models.Material) templ.Component {
 				var templ_7745c5c3_Var3 string
 				templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.JoinStringErrs(Material.Name)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `material.list.templ`, Line: 38, Col: 26}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `material_views/material.list.templ`, Line: 36, Col: 26}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var3))
 				if templ_7745c5c3_Err != nil {
@@ -85,7 +83,7 @@ func MaterialIndex(materials []models.Material) templ.Component {
 				var templ_7745c5c3_Var5 string
 				templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("/Material/delete/%d", Material.ID))
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `material.list.templ`, Line: 49, Col: 69}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `material_views/material.list.templ`, Line: 47, Col: 69}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var5))
 				if templ_7745c5c3_Err != nil {
@@ -98,7 +96,7 @@ func MaterialIndex(materials []models.Material) templ.Component {
 				var templ_7745c5c3_Var6 string
 				templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("Are you sure you want to delete the material with ID #%d?", Material.ID))
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `material.list.templ`, Line: 50, Col: 108}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `material_views/material.list.templ`, Line: 48, Col: 108}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var6))
 				if templ_7745c5c3_Err != nil {

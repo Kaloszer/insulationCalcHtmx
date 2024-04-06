@@ -39,6 +39,14 @@ func Setup(app *fiber.App) {
 	todoApp.Delete("/delete/:id", HandleDeleteTodo)
 	todoApp.Post("/logout", HandleLogout)
 
+	materialApp := app.Group("/material", AuthMiddleware)
+	materialApp.Get("/list", HandleMaterialViewList)
+	materialApp.Get("/create", HandleViewMaterialCreatePage)
+	materialApp.Post("/create", HandleViewMaterialCreatePage)
+	materialApp.Get("/edit/:id", HandleViewMaterialEditPage)
+	materialApp.Post("/edit/:id", HandleViewMaterialEditPage)
+	materialApp.Delete("/delete/:id", HandleDeleteMaterial)
+
 	/* Page Not Found Management */
 	app.Use(func(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusNotFound).SendFile("./views/404.html")

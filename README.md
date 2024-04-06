@@ -18,7 +18,7 @@ On the other hand, the styling of the views is achieved through Tailwind CSS and
 Finally, minimal use of [_hyperscript](https://hyperscript.org/) is made to achieve the action of closing the alerts when they are displayed.
 
 >[!NOTE]
->***This application is identical to that of a previous [repository](https://github.com/emarifer/gofiber-htmx-todolist) of mine, which is developed in GoFiber-template/html instead of the [Templ](https://templ.guide/) templating language, as in this case.***
+>***This application is identical to that of a previous [repository](https://github.com/kaloszer/gofiber-htmx-todolist) of mine, which is developed in GoFiber-template/html instead of the [Templ](https://templ.guide/) templating language, as in this case.***
 
 ---
 

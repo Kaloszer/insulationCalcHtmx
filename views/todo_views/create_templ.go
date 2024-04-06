@@ -13,7 +13,7 @@ import "bytes"
 import (
 	"github.com/gofiber/fiber/v2"
 
-	"github.com/kaloszer/insulationcalchtmx/views"
+	"github.com/kaloszer/insulationCalcHtmx/views"
 )
 
 func CreateIndex() templ.Component {

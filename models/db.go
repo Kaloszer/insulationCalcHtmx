@@ -40,6 +40,20 @@ func MakeMigrations() {
 		log.Fatal(err)
 	}
 
+	stmt = `CREATE TABLE IF NOT EXISTS materials (
+		id INTEGER PRIMARY KEY AUTOINCREMENT,
+		created_by INTEGER NOT NULL,
+		name VARCHAR(64) NOT NULL,
+		lambda INTEGER NOT NULL,
+		description VARCHAR(255) NULL,
+		FOREIGN KEY(created_by) REFERENCES users(id)
+	);`
+
+	_, err = db.Exec(stmt)
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	stmt = `CREATE TABLE IF NOT EXISTS todos (
 		id INTEGER PRIMARY KEY AUTOINCREMENT,
 		created_by INTEGER NOT NULL,

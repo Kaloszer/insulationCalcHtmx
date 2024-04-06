@@ -11,7 +11,7 @@ import "io"
 import "bytes"
 
 import (
-	"github.com/kaloszer/insulationcalchtmx/views/partials"
+	"github.com/kaloszer/insulationCalcHtmx/views/partials"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -36,7 +36,7 @@ func Layout(page string, fromProtected bool, msg fiber.Map, username string) tem
 		var templ_7745c5c3_Var2 string
 		templ_7745c5c3_Var2, templ_7745c5c3_Err = templ.JoinStringErrs(page)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/base.layout.templ`, Line: 25, Col: 25}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `base.layout.templ`, Line: 25, Col: 25}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var2))
 		if templ_7745c5c3_Err != nil {

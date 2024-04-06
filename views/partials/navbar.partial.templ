@@ -15,6 +15,9 @@ templ Navbar(fromProtected bool, username string) {
 				<a hx-swap="transition:true" class="btn btn-ghost text-lg" href="/todo/list">
 					Tasks
 				</a>
+				<a hx-swap="transition:true" class="btn btn-ghost text-lg" href="/material/list">
+					Materials
+				</a>
 				<button
  					hx-swap="transition:true"
  					hx-post="/todo/logout"

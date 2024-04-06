@@ -5,36 +5,36 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/kaloszer/insulationCalcHtmx/views/material_views"
+
 	"github.com/a-h/templ"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/adaptor"
-	"github.com/kaloszer/insulationcalchtmx/models"
+	"github.com/kaloszer/insulationCalcHtmx/models"
 	"github.com/sujit-baniya/flash"
-
-	"views/material_views"
 )
 
 /********** Handlers for Material Views **********/
 
 // Render List Page with success/error messages
 func HandleMaterialViewList(c *fiber.Ctx) error {
-	Material := new(models.Material)
-	Material.CreatedBy = c.Locals("userId").(uint64)
+	material := new(models.Material)
+	material.CreatedBy = c.Locals("userId").(uint64)
 
 	fm := fiber.Map{
 		"type": "error",
 	}
 
-	MaterialsSlice, err := Material.GetAllMaterials()
+	materialsSlice, err := material.GetAllMaterials()
 	if err != nil {
 		fm["message"] = fmt.Sprintf("something went wrong: %s", err)
 
-		return flash.WithError(c, fm).Redirect("/Material/list")
+		return flash.WithError(c, fm).Redirect("/material/create")
 	}
 
-	tindex := material_views.MaterialIndex(MaterialsSlice)
+	tindex := material_views.MaterialIndex(materialsSlice)
 	tlist := material_views.MaterialList(
-		" | Materials List",
+		" | materials List",
 		fromProtected,
 		flash.Get(c),
 		c.Locals("username").(string),
@@ -58,19 +58,26 @@ func HandleViewMaterialCreatePage(c *fiber.Ctx) error {
 		newMaterial.CreatedBy = c.Locals("userId").(uint64)
 		newMaterial.Name = strings.Trim(c.FormValue("title"), " ")
 		newMaterial.Description = strings.Trim(c.FormValue("description"), " ")
-		newMaterial.Lambda = c.QueryFloat("lambda", 0.20)
+
+		valueStr := c.FormValue("lambda") // This is a string.
+		value, err := strconv.ParseUint(valueStr, 10, 64)
+		if err != nil {
+			fm["message"] = fmt.Sprintf("something went wrong: %s", err)
+			return flash.WithError(c, fm).Redirect("/material/list")
+		}
+		newMaterial.Lambda = value
 
 		if _, err := newMaterial.CreateMaterial(); err != nil {
 			fm["message"] = fmt.Sprintf("something went wrong: %s", err)
 
-			return flash.WithError(c, fm).Redirect("/Material/list")
+			return flash.WithError(c, fm).Redirect("/material/list")
 		}
 
-		return c.Redirect("/Material/list")
+		return c.Redirect("/material/list")
 	}
 
-	cindex := Material_views.CreateIndex()
-	create := Material_views.Create(
+	cindex := material_views.CreateIndex()
+	create := material_views.Create(
 		" | Create a new material",
 		fromProtected,
 		flash.Get(c),
@@ -86,33 +93,40 @@ func HandleViewMaterialCreatePage(c *fiber.Ctx) error {
 // Render Edit Material Page with success/error messages
 func HandleViewMaterialEditPage(c *fiber.Ctx) error {
 	idParams, _ := strconv.Atoi(c.Params("id"))
-	MaterialId := uint64(idParams)
+	materialId := uint64(idParams)
 
-	Material := new(models.Material)
-	Material.ID = MaterialId
-	Material.CreatedBy = c.Locals("userId").(uint64)
+	material := new(models.Material)
+	material.ID = materialId
+	material.CreatedBy = c.Locals("userId").(uint64)
 
 	fm := fiber.Map{
 		"type": "error",
 	}
 
-	recoveredMaterial, err := Material.GetMaterialById()
+	recoveredMaterial, err := material.GetMaterialById()
 	if err != nil {
 		fm["message"] = fmt.Sprintf("something went wrong: %s", err)
 
-		return flash.WithError(c, fm).Redirect("/Material/list")
+		return flash.WithError(c, fm).Redirect("/material/list")
 	}
 
 	if c.Method() == "POST" {
-		Material.Name = strings.Trim(c.FormValue("title"), " ")
-		Material.Description = strings.Trim(c.FormValue("description"), " ")
-		Material.Lambda = c.QueryFloat("lambda")
+		material.Name = strings.Trim(c.FormValue("title"), " ")
+		material.Description = strings.Trim(c.FormValue("description"), " ")
 
-		_, err := Material.UpdateMaterial()
+		valueStr := c.FormValue("lambda") // This is a string.
+		value, err := strconv.ParseUint(valueStr, 10, 64)
+		if err != nil {
+			fm["message"] = fmt.Sprintf("something went wrong: %s", err)
+			return flash.WithError(c, fm).Redirect("/material/list")
+		}
+		material.Lambda = value
+
+		_, err = material.UpdateMaterial()
 		if err != nil {
 			fm["message"] = fmt.Sprintf("something went wrong: %s", err)
 
-			return flash.WithError(c, fm).Redirect("/Material/list")
+			return flash.WithError(c, fm).Redirect("/material/list")
 		}
 
 		fm = fiber.Map{
@@ -120,11 +134,11 @@ func HandleViewMaterialEditPage(c *fiber.Ctx) error {
 			"message": "Material successfully updated!!",
 		}
 
-		return flash.WithSuccess(c, fm).Redirect("/Material/list")
+		return flash.WithSuccess(c, fm).Redirect("/material/list")
 	}
 
-	uindex := Material_views.UpdateIndex(recoveredMaterial)
-	update := Material_views.Update(
+	uindex := material_views.UpdateIndex(recoveredMaterial)
+	update := material_views.Update(
 		fmt.Sprintf(" | Edit Material #%d", recoveredMaterial.ID),
 		fromProtected,
 		flash.Get(c),
@@ -154,7 +168,7 @@ func HandleDeleteMaterial(c *fiber.Ctx) error {
 		fm["message"] = fmt.Sprintf("something went wrong: %s", err)
 
 		return flash.WithError(c, fm).Redirect(
-			"/Material/list",
+			"/material/list",
 			fiber.StatusSeeOther,
 		)
 	}
@@ -164,5 +178,5 @@ func HandleDeleteMaterial(c *fiber.Ctx) error {
 		"message": "Task successfully deleted!!",
 	}
 
-	return flash.WithSuccess(c, fm).Redirect("/Material/list", fiber.StatusSeeOther)
+	return flash.WithSuccess(c, fm).Redirect("/material/list", fiber.StatusSeeOther)
 }

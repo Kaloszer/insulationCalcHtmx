@@ -8,8 +8,8 @@ import (
 	"github.com/a-h/templ"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/adaptor"
-	"github.com/kaloszer/insulationcalchtmx/models"
-	"github.com/kaloszer/insulationcalchtmx/views/todo_views"
+	"github.com/kaloszer/insulationCalcHtmx/models"
+	"github.com/kaloszer/insulationCalcHtmx/views/todo_views"
 	"github.com/sujit-baniya/flash"
 )
 

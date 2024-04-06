@@ -14,7 +14,7 @@ type Material struct {
 }
 
 func (t *Material) GetAllMaterials() ([]Material, error) {
-	query := fmt.Sprintf("SELECT id, Name, description, Lambda FROM Materials WHERE created_by = %d ORDER BY name DESC", t.CreatedBy)
+	query := fmt.Sprintf("SELECT id, name, description, lambda FROM materials WHERE created_by = %d ORDER BY name DESC", t.CreatedBy)
 
 	rows, err := db.Query(query)
 	if err != nil {
@@ -35,7 +35,7 @@ func (t *Material) GetAllMaterials() ([]Material, error) {
 
 func (t *Material) GetMaterialById() (Material, error) {
 
-	query := `SELECT id, name, description, status FROM Materials
+	query := `SELECT id, name, description, lambda FROM materials
 		WHERE created_by = ? AND id=?`
 
 	stmt, err := db.Prepare(query)
@@ -130,7 +130,7 @@ func (t *Material) UpdateMaterial() (Material, error) {
 
 func (t *Material) DeleteMaterial() error {
 
-	query := `DELETE FROM Materials
+	query := `DELETE FROM materials
 		WHERE created_by = ? AND id=?`
 
 	stmt, err := db.Prepare(query)

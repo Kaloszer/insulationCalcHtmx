@@ -3,8 +3,8 @@ package main
 import (
 	"log"
 
-	"github.com/kaloszer/insulationcalchtmx/handlers"
-	"github.com/kaloszer/insulationcalchtmx/models"
+	"github.com/kaloszer/insulationCalcHtmx/handlers"
+	"github.com/kaloszer/insulationCalcHtmx/models"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/logger"
