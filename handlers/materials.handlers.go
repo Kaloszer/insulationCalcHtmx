@@ -60,12 +60,12 @@ func HandleViewMaterialCreatePage(c *fiber.Ctx) error {
 		newMaterial.Description = strings.Trim(c.FormValue("description"), " ")
 
 		valueStr := c.FormValue("lambda") // This is a string.
-		value, err := strconv.ParseUint(valueStr, 10, 64)
+		value, err := strconv.ParseFloat(valueStr, 32)
 		if err != nil {
 			fm["message"] = fmt.Sprintf("something went wrong: %s", err)
 			return flash.WithError(c, fm).Redirect("/material/list")
 		}
-		newMaterial.Lambda = value
+		newMaterial.Lambda = float32(value)
 
 		if _, err := newMaterial.CreateMaterial(); err != nil {
 			fm["message"] = fmt.Sprintf("something went wrong: %s", err)
@@ -115,12 +115,12 @@ func HandleViewMaterialEditPage(c *fiber.Ctx) error {
 		material.Description = strings.Trim(c.FormValue("description"), " ")
 
 		valueStr := c.FormValue("lambda") // This is a string.
-		value, err := strconv.ParseUint(valueStr, 10, 64)
+		value, err := strconv.ParseFloat(valueStr, 32)
 		if err != nil {
 			fm["message"] = fmt.Sprintf("something went wrong: %s", err)
 			return flash.WithError(c, fm).Redirect("/material/list")
 		}
-		material.Lambda = value
+		material.Lambda = float32(value)
 
 		_, err = material.UpdateMaterial()
 		if err != nil {

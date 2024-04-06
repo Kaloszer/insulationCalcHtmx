@@ -36,16 +36,13 @@ templ UpdateIndex(material models.Material) {
 			</label>
 			<label class="flex flex-col justify-start gap-2">
 				Lambda:
-				<input
- 					class="input input-bordered input-primary bg-slate-800"
- 					type="text"
- 					name="lambda"
- 					value={ strconv.Itoa(int(material.Lambda)) }
- 					required
- 					autofocus
- 					minlength="1"
- 					maxlength="4"
-				/>
+				<textarea
+					class="textarea textarea-primary h-36 max-h-36 bg-slate-800"
+					name="lambda"
+					minlength="1"
+					maxlength="5"
+					placeholder="0.019"
+				></textarea>
 			</label>
 			<footer class="card-actions flex justify-between">
 				<div class="flex gap-4">

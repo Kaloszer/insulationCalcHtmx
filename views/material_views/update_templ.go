@@ -39,7 +39,7 @@ func UpdateIndex(material models.Material) templ.Component {
 		var templ_7745c5c3_Var2 string
 		templ_7745c5c3_Var2, templ_7745c5c3_Err = templ.JoinStringErrs(strconv.Itoa(int(material.ID)))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `material_views/update.templ`, Line: 14, Col: 47}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/material_views/update.templ`, Line: 14, Col: 47}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var2))
 		if templ_7745c5c3_Err != nil {
@@ -52,7 +52,7 @@ func UpdateIndex(material models.Material) templ.Component {
 		var templ_7745c5c3_Var3 string
 		templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.JoinStringErrs(material.Name)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `material_views/update.templ`, Line: 24, Col: 27}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/material_views/update.templ`, Line: 24, Col: 27}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var3))
 		if templ_7745c5c3_Err != nil {
@@ -65,26 +65,13 @@ func UpdateIndex(material models.Material) templ.Component {
 		var templ_7745c5c3_Var4 string
 		templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.JoinStringErrs(material.Description)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `material_views/update.templ`, Line: 34, Col: 27}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/material_views/update.templ`, Line: 34, Col: 27}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var4))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</textarea></label> <label class=\"flex flex-col justify-start gap-2\">Lambda: <input class=\"input input-bordered input-primary bg-slate-800\" type=\"text\" name=\"lambda\" value=\"")
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
-		var templ_7745c5c3_Var5 string
-		templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.JoinStringErrs(strconv.Itoa(int(material.Lambda)))
-		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `material_views/update.templ`, Line: 43, Col: 48}
-		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var5))
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" required autofocus minlength=\"1\" maxlength=\"4\"></label><footer class=\"card-actions flex justify-between\"><div class=\"flex gap-4\"><button class=\"badge badge-primary p-4 hover:scale-[1.1]\">Update</button> <a href=\"/material/list\" class=\"badge badge-neutral p-4 hover:scale-[1.1]\">Cancel</a></div></footer></form></section>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</textarea></label> <label class=\"flex flex-col justify-start gap-2\">Lambda: <textarea class=\"textarea textarea-primary h-36 max-h-36 bg-slate-800\" name=\"lambda\" minlength=\"1\" maxlength=\"5\" placeholder=\"0.019\"></textarea></label><footer class=\"card-actions flex justify-between\"><div class=\"flex gap-4\"><button class=\"badge badge-primary p-4 hover:scale-[1.1]\">Update</button> <a href=\"/material/list\" class=\"badge badge-neutral p-4 hover:scale-[1.1]\">Cancel</a></div></footer></form></section>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -109,12 +96,12 @@ func Update(
 			defer templ.ReleaseBuffer(templ_7745c5c3_Buffer)
 		}
 		ctx = templ.InitializeContext(ctx)
-		templ_7745c5c3_Var6 := templ.GetChildren(ctx)
-		if templ_7745c5c3_Var6 == nil {
-			templ_7745c5c3_Var6 = templ.NopComponent
+		templ_7745c5c3_Var5 := templ.GetChildren(ctx)
+		if templ_7745c5c3_Var5 == nil {
+			templ_7745c5c3_Var5 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Var7 := templ.ComponentFunc(func(ctx context.Context, templ_7745c5c3_W io.Writer) (templ_7745c5c3_Err error) {
+		templ_7745c5c3_Var6 := templ.ComponentFunc(func(ctx context.Context, templ_7745c5c3_W io.Writer) (templ_7745c5c3_Err error) {
 			templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templ_7745c5c3_W.(*bytes.Buffer)
 			if !templ_7745c5c3_IsBuffer {
 				templ_7745c5c3_Buffer = templ.GetBuffer()
@@ -129,7 +116,7 @@ func Update(
 			}
 			return templ_7745c5c3_Err
 		})
-		templ_7745c5c3_Err = views.Layout(page, fromProtected, msg, username).Render(templ.WithChildren(ctx, templ_7745c5c3_Var7), templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = views.Layout(page, fromProtected, msg, username).Render(templ.WithChildren(ctx, templ_7745c5c3_Var6), templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

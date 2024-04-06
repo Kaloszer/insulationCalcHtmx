@@ -6,11 +6,11 @@ import (
 )
 
 type Material struct {
-	ID          uint64 `json:"id"`
-	CreatedBy   uint64 `json:"created_by"`
-	Name        string `json:"name"`
-	Description string `json:"description,omitempty"`
-	Lambda      uint64 `json:"lambda"`
+	ID          uint64  `json:"id"`
+	CreatedBy   uint64  `json:"created_by"`
+	Name        string  `json:"name"`
+	Description string  `json:"description,omitempty"`
+	Lambda      float32 `json:"lambda"`
 }
 
 func (t *Material) GetAllMaterials() ([]Material, error) {
@@ -63,8 +63,8 @@ func (t *Material) GetMaterialById() (Material, error) {
 
 func (t *Material) CreateMaterial() (Material, error) {
 
-	query := `INSERT INTO Materials (created_by, name, description, lambda)
-		VALUES(?, ?, ?, ?) RETURNING *`
+	query := `INSERT INTO materials (created_by, name, description, lambda)
+    	VALUES(?, ?, ?, ?) RETURNING id, created_by, name, description, lambda`
 
 	stmt, err := db.Prepare(query)
 	if err != nil {
@@ -98,8 +98,8 @@ func (t *Material) CreateMaterial() (Material, error) {
 }
 func (t *Material) UpdateMaterial() (Material, error) {
 
-	query := `UPDATE Materials SET name = ?,  description = ?, status = ?, lambda = ?
-		WHERE created_by = ? AND id=? RETURNING id, name, description, status`
+	query := `UPDATE materials SET name = ?,  description = ?, status = ?, lambda = ?
+    	WHERE created_by = ? AND id=? RETURNING id, name, description, lambda`
 
 	stmt, err := db.Prepare(query)
 	if err != nil {

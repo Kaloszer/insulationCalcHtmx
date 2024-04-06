@@ -23,7 +23,7 @@ templ MaterialIndex(materials []models.Material) {
 			<thead class="bg-slate-700">
 				<tr>
 					<th></th>
-					<th>Materials</th>
+					<th>Material</th>
 					<th>Lambda</th>
 					<th class="text-center">Options</th>
 				</tr>
@@ -34,17 +34,18 @@ templ MaterialIndex(materials []models.Material) {
 						<tr>
 							<th>{ strconv.Itoa(int(Material.ID)) }</th>
 							<td>{ Material.Name }</td>
+							<td>{ templ.JoinStringErrs(strconv.FormatFloat(float64(Material.Lambda), 'f', -1, 32)) }</td>
 							<td class="flex justify-center gap-2">
 								<a
  									hx-swap="transition:true"
- 									href={ templ.URL(fmt.Sprintf("/Material/edit/%d", Material.ID)) }
+ 									href={ templ.URL(fmt.Sprintf("/material/edit/%d", Material.ID)) }
  									class="badge badge-primary p-3 hover:scale-[1.1]"
 								>
 									Edit
 								</a>
 								<button
  									hx-swap="transition:true"
- 									hx-delete={ fmt.Sprintf("/Material/delete/%d", Material.ID) }
+ 									hx-delete={ fmt.Sprintf("/material/delete/%d", Material.ID) }
  									hx-confirm={ fmt.Sprintf("Are you sure you want to delete the material with ID #%d?", Material.ID) }
  									hx-target="body"
  									class="badge badge-error p-3 hover:scale-[1.1]"

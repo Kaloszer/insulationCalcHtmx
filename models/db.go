@@ -44,7 +44,7 @@ func MakeMigrations() {
 		id INTEGER PRIMARY KEY AUTOINCREMENT,
 		created_by INTEGER NOT NULL,
 		name VARCHAR(64) NOT NULL,
-		lambda INTEGER NOT NULL,
+		lambda REAL NOT NULL,
 		description VARCHAR(255) NULL,
 		FOREIGN KEY(created_by) REFERENCES users(id)
 	);`
