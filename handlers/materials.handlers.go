@@ -2,19 +2,65 @@ package handlers
 
 import (
 	"fmt"
+	"log"
+	"os"
 	"strconv"
 	"strings"
-
-	"github.com/kaloszer/insulationCalcHtmx/views/material_views"
+	"text/tabwriter"
 
 	"github.com/a-h/templ"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/adaptor"
 	"github.com/kaloszer/insulationCalcHtmx/models"
+	"github.com/kaloszer/insulationCalcHtmx/views/material_views"
+	"github.com/olekukonko/tablewriter"
 	"github.com/sujit-baniya/flash"
 )
 
-/********** Handlers for Material Views **********/
+// HandleViewMaterialCreatePage handler
+func HandleViewMaterialCreatePage(c *fiber.Ctx) error {
+	if c.Method() == "POST" {
+		return c.Redirect("/material/list")
+	}
+
+	w := tabwriter.NewWriter(os.Stdout, 0, 0, 1, ' ', tabwriter.Debug)
+	table := tablewriter.NewWriter(w)
+	table.SetHeader([]string{"Name", "Lambda", "Price", "Description"})
+
+	materials, err := models.LoadMaterialsFromTOML("materials.toml")
+	if err != nil {
+		log.Printf("Error reading materials from TOML file: %v", err)
+		return flash.WithError(c, fiber.Map{
+			"type":    "error",
+			"message": "Error reading materials from TOML file",
+		}).Redirect("/material/list")
+	}
+
+	for _, material := range materials {
+		table.Append([]string{
+			material.Name,
+			fmt.Sprintf("%f", material.Lambda),
+			fmt.Sprintf("%f", material.Price),
+			material.Description,
+		})
+	}
+
+	table.SetCaption(true, "Materials")
+	table.Render()
+
+	cindex := material_views.CreateIndex()
+	create := material_views.Create(
+		" | Create a new material",
+		fromProtected,
+		flash.Get(c),
+		c.Locals("username").(string),
+		cindex,
+	)
+
+	handler := adaptor.HTTPHandler(templ.Handler(create))
+
+	return handler(c)
+}
 
 // Render List Page with success/error messages
 func HandleMaterialViewList(c *fiber.Ctx) error {
@@ -42,50 +88,6 @@ func HandleMaterialViewList(c *fiber.Ctx) error {
 	)
 
 	handler := adaptor.HTTPHandler(templ.Handler(tlist))
-
-	return handler(c)
-}
-
-// Render Create Material Page with success/error messages
-func HandleViewMaterialCreatePage(c *fiber.Ctx) error {
-
-	if c.Method() == "POST" {
-		fm := fiber.Map{
-			"type": "error",
-		}
-
-		newMaterial := new(models.Material)
-		newMaterial.CreatedBy = c.Locals("userId").(uint64)
-		newMaterial.Name = strings.Trim(c.FormValue("title"), " ")
-		newMaterial.Description = strings.Trim(c.FormValue("description"), " ")
-
-		valueStr := c.FormValue("lambda") // This is a string.
-		value, err := strconv.ParseFloat(valueStr, 32)
-		if err != nil {
-			fm["message"] = fmt.Sprintf("something went wrong: %s", err)
-			return flash.WithError(c, fm).Redirect("/material/list")
-		}
-		newMaterial.Lambda = float32(value)
-
-		if _, err := newMaterial.CreateMaterial(); err != nil {
-			fm["message"] = fmt.Sprintf("something went wrong: %s", err)
-
-			return flash.WithError(c, fm).Redirect("/material/list")
-		}
-
-		return c.Redirect("/material/list")
-	}
-
-	cindex := material_views.CreateIndex()
-	create := material_views.Create(
-		" | Create a new material",
-		fromProtected,
-		flash.Get(c),
-		c.Locals("username").(string),
-		cindex,
-	)
-
-	handler := adaptor.HTTPHandler(templ.Handler(create))
 
 	return handler(c)
 }

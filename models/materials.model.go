@@ -3,15 +3,47 @@ package models
 import (
 	"errors"
 	"fmt"
+	"io/ioutil"
+
+	"github.com/BurntSushi/toml"
 )
 
 type Material struct {
-	ID          uint64  `json:"id"`
-	CreatedBy   uint64  `json:"created_by"`
-	Name        string  `json:"name"`
-	Description string  `json:"description,omitempty"`
-	Lambda      float32 `json:"lambda"`
-	Price       float32 `json:"price,omitempty"`
+	ID          uint64  `json:"id" toml:"id"`
+	CreatedBy   uint64  `json:"created_by" toml:"created_by"`
+	Name        string  `json:"name" toml:"name"`
+	Description string  `json:"description,omitempty" toml:"description"`
+	Lambda      float32 `json:"lambda" toml:"lambda"`
+	Price       float32 `json:"price,omitempty" toml:"price"`
+	Thickness   float32 `json:"thickness" toml:"thickness"`
+}
+
+// TOMLData represents the structure of your TOML file
+type TOMLData struct {
+	Insulation []Material `toml:"insulation"`
+	Other      []Material `toml:"other"`
+	Wall       []Material `toml:"wall"`
+}
+
+// LoadMaterialsFromTOML loads materials from a TOML file
+func LoadMaterialsFromTOML(filename string) ([]Material, error) {
+	content, err := ioutil.ReadFile(filename)
+	if err != nil {
+		return nil, err
+	}
+
+	var data TOMLData
+	if err := toml.Unmarshal(content, &data); err != nil {
+		return nil, err
+	}
+
+	// Combine all materials into a single slice
+	var materials []Material
+	materials = append(materials, data.Insulation...)
+	materials = append(materials, data.Other...)
+	materials = append(materials, data.Wall...)
+
+	return materials, nil
 }
 
 type Search struct {
@@ -70,8 +102,8 @@ func (t *Material) GetMaterialById() (Material, error) {
 
 func (t *Material) CreateMaterial() (Material, error) {
 
-	query := `INSERT INTO materials (created_by, name, description, lambda, price)
-    	VALUES(?, ?, ?, ?, ?) RETURNING id, created_by, name, description, lambda, price`
+	query := `INSERT INTO materials (created_by, name, description, lambda, thickness, price)
+    	VALUES(?, ?, ?, ?, ?) RETURNING id, created_by, name, description, thickness, lambda, price`
 
 	stmt, err := db.Prepare(query)
 	if err != nil {

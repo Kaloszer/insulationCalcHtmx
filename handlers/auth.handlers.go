@@ -35,36 +35,44 @@ func HandleViewLogin(c *fiber.Ctx) error {
 	handler := adaptor.HTTPHandler(templ.Handler(login))
 
 	if c.Method() == "POST" {
-		var (
-			user models.User
-			err  error
-		)
-		fm := fiber.Map{
-			"type": "error",
+		email := c.FormValue("email")
+		password := c.FormValue("password")
+
+		if email == "" || password == "" {
+			fm := fiber.Map{
+				"type":    "error",
+				"message": "Email and password are required",
+			}
+			return flash.WithError(c, fm).Redirect("/login")
 		}
 
-		// notice: in production you should not inform the user
-		// with detailed messages about login failures
-		if user, err = models.CheckEmail(c.FormValue("email")); err != nil {
-			fm["message"] = "There is no user with that email"
-
+		user, err := models.CheckEmail(email)
+		if err != nil {
+			fm := fiber.Map{
+				"type":    "error",
+				"message": "There is no user with that email",
+			}
 			return flash.WithError(c, fm).Redirect("/login")
 		}
 
 		err = bcrypt.CompareHashAndPassword(
 			[]byte(user.Password),
-			[]byte(c.FormValue("password")),
+			[]byte(password),
 		)
 		if err != nil {
-			fm["message"] = "Incorrect password"
-
+			fm := fiber.Map{
+				"type":    "error",
+				"message": "Incorrect password",
+			}
 			return flash.WithError(c, fm).Redirect("/login")
 		}
 
 		session, err := store.Get(c)
 		if err != nil {
-			fm["message"] = fmt.Sprintf("something went wrong: %s", err)
-
+			fm := fiber.Map{
+				"type":    "error",
+				"message": fmt.Sprintf("something went wrong: %s", err),
+			}
 			return flash.WithError(c, fm).Redirect("/login")
 		}
 
@@ -73,12 +81,14 @@ func HandleViewLogin(c *fiber.Ctx) error {
 
 		err = session.Save()
 		if err != nil {
-			fm["message"] = fmt.Sprintf("something went wrong: %s", err)
-
+			fm := fiber.Map{
+				"type":    "error",
+				"message": fmt.Sprintf("something went wrong: %s", err),
+			}
 			return flash.WithError(c, fm).Redirect("/login")
 		}
 
-		fm = fiber.Map{
+		fm := fiber.Map{
 			"type":    "success",
 			"message": "You have successfully logged in!!",
 		}
