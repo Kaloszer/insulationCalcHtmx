@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
+	"strings"
 
 	"github.com/BurntSushi/toml"
 	_ "github.com/mattn/go-sqlite3"
@@ -110,6 +111,50 @@ func MakeMigrations() {
 	if err != nil {
 		log.Fatal(err)
 	}
+}
+
+func GetMaterialsByIDs(ids string) ([]Material, error) {
+	getConnection()
+
+	// Split the ids string into a slice of strings
+	idSlice := strings.Split(ids, ",")
+
+	// Create a slice of interface{} to hold the id values
+	args := make([]interface{}, len(idSlice))
+	for i, id := range idSlice {
+		args[i] = id
+	}
+
+	// Create a parameterized query with the correct number of placeholders
+	query := fmt.Sprintf("SELECT id, created_by, name, description, lambda, price, thickness FROM materials WHERE id IN (%s)",
+		strings.Join(strings.Split(strings.Repeat("?", len(idSlice)), ""), ","))
+
+	// Execute the query
+	rows, err := db.Query(query, args...)
+	if err != nil {
+		return nil, fmt.Errorf("error querying materials: %w", err)
+	}
+	defer rows.Close()
+
+	// Slice to hold the results
+	var materials []Material
+
+	// Iterate over the rows and scan the results into Material structs
+	for rows.Next() {
+		var m Material
+		err := rows.Scan(&m.ID, &m.CreatedBy, &m.Name, &m.Description, &m.Lambda, &m.Price, &m.Thickness)
+		if err != nil {
+			return nil, fmt.Errorf("error scanning material row: %w", err)
+		}
+		materials = append(materials, m)
+	}
+
+	// Check for errors from iterating over rows
+	if err := rows.Err(); err != nil {
+		return nil, fmt.Errorf("error iterating over material rows: %w", err)
+	}
+
+	return materials, nil
 }
 
 /*

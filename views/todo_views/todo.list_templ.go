@@ -12,12 +12,10 @@ import "bytes"
 
 import (
 	"fmt"
-	"strconv"
-
+	"github.com/gofiber/fiber/v2"
 	"github.com/kaloszer/insulationCalcHtmx/models"
 	"github.com/kaloszer/insulationCalcHtmx/views"
-
-	"github.com/gofiber/fiber/v2"
+	"strconv"
 )
 
 func TodoIndex(todos []models.Todo) templ.Component {
@@ -50,7 +48,7 @@ func TodoIndex(todos []models.Todo) templ.Component {
 				var templ_7745c5c3_Var2 string
 				templ_7745c5c3_Var2, templ_7745c5c3_Err = templ.JoinStringErrs(strconv.Itoa(int(todo.ID)))
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/todo_views/todo.list.templ`, Line: 37, Col: 39}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/todo_views/todo.list.templ`, Line: 35, Col: 39}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var2))
 				if templ_7745c5c3_Err != nil {
@@ -63,7 +61,7 @@ func TodoIndex(todos []models.Todo) templ.Component {
 				var templ_7745c5c3_Var3 string
 				templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.JoinStringErrs(todo.Title)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/todo_views/todo.list.templ`, Line: 38, Col: 23}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/todo_views/todo.list.templ`, Line: 36, Col: 23}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var3))
 				if templ_7745c5c3_Err != nil {
@@ -100,7 +98,7 @@ func TodoIndex(todos []models.Todo) templ.Component {
 				var templ_7745c5c3_Var5 string
 				templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("/todo/delete/%d", todo.ID))
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/todo_views/todo.list.templ`, Line: 56, Col: 61}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/todo_views/todo.list.templ`, Line: 54, Col: 61}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var5))
 				if templ_7745c5c3_Err != nil {
@@ -113,7 +111,7 @@ func TodoIndex(todos []models.Todo) templ.Component {
 				var templ_7745c5c3_Var6 string
 				templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("Are you sure you want to delete the task with ID #%d?", todo.ID))
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/todo_views/todo.list.templ`, Line: 57, Col: 100}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/todo_views/todo.list.templ`, Line: 55, Col: 100}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var6))
 				if templ_7745c5c3_Err != nil {

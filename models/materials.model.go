@@ -13,9 +13,22 @@ type Material struct {
 	CreatedBy   uint64  `json:"created_by" toml:"created_by"`
 	Name        string  `json:"name" toml:"name"`
 	Description string  `json:"description,omitempty" toml:"description"`
-	Lambda      float32 `json:"lambda" toml:"lambda"`
-	Price       float32 `json:"price,omitempty" toml:"price"`
-	Thickness   float32 `json:"thickness" toml:"thickness"`
+	Lambda      float64 `json:"lambda" toml:"lambda"`
+	Price       float64 `json:"price,omitempty" toml:"price"`
+	Thickness   float64 `json:"thickness" toml:"thickness"`
+}
+
+// New structs for insulation calculation
+type InsulationLayer struct {
+	Material  Material `json:"material"`
+	Thickness float64  `json:"thickness"`
+	UValue    float64  `json:"u_value"`
+}
+
+type InsulationResult struct {
+	Layers      []InsulationLayer `json:"layers"`
+	TotalUValue float64           `json:"total_u_value"`
+	TotalCost   float64           `json:"total_cost"`
 }
 
 // TOMLData represents the structure of your TOML file
@@ -48,8 +61,8 @@ func LoadMaterialsFromTOML(filename string) ([]Material, error) {
 
 type Search struct {
 	Name   string  `json:"name"`
-	Lambda float32 `json:"lambda"`
-	Price  float32 `json:"price"`
+	Lambda float64 `json:"lambda"`
+	Price  float64 `json:"price"`
 }
 
 func (t *Material) GetAllMaterials() ([]Material, error) {

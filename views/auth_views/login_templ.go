@@ -11,9 +11,8 @@ import "io"
 import "bytes"
 
 import (
-	"github.com/kaloszer/insulationCalcHtmx/views"
-
 	"github.com/gofiber/fiber/v2"
+	"github.com/kaloszer/insulationCalcHtmx/views"
 )
 
 func LoginIndex(fromProtected bool) templ.Component {

@@ -46,6 +46,8 @@ func Setup(app *fiber.App) {
 	materialApp.Get("/edit/:id", HandleViewMaterialEditPage)
 	materialApp.Post("/edit/:id", HandleViewMaterialEditPage)
 	materialApp.Delete("/delete/:id", HandleDeleteMaterial)
+	materialApp.Get("/insulation-calculator", HandleInsulationCalculatorPage)
+	materialApp.Post("/calculate-insulation", HandleCalculateInsulation)
 
 	/* Page Not Found Management */
 	app.Use(func(c *fiber.Ctx) error {

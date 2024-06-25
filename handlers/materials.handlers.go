@@ -3,7 +3,9 @@ package handlers
 import (
 	"fmt"
 	"log"
+	"math"
 	"os"
+	"sort"
 	"strconv"
 	"strings"
 	"text/tabwriter"
@@ -117,20 +119,20 @@ func HandleViewMaterialEditPage(c *fiber.Ctx) error {
 		material.Description = strings.Trim(c.FormValue("description"), " ")
 
 		valueStr := c.FormValue("lambda") // This is a string.
-		value, err := strconv.ParseFloat(valueStr, 32)
+		value, err := strconv.ParseFloat(valueStr, 64)
 		if err != nil {
 			fm["message"] = fmt.Sprintf("something went wrong: %s", err)
 			return flash.WithError(c, fm).Redirect("/material/list")
 		}
-		material.Lambda = float32(value)
+		material.Lambda = float64(value)
 
 		valuePriceStr := c.FormValue("price") // This is a string.
-		value, err = strconv.ParseFloat(valuePriceStr, 32)
+		value, err = strconv.ParseFloat(valuePriceStr, 64)
 		if err != nil {
 			fm["message"] = fmt.Sprintf("something went wrong: %s", err)
 			return flash.WithError(c, fm).Redirect("/material/list")
 		}
-		material.Price = float32(value)
+		material.Price = float64(value)
 
 		_, err = material.UpdateMaterial()
 		if err != nil {
@@ -173,20 +175,20 @@ func HandleViewMaterialSearch(c *fiber.Ctx) error {
 		search.Name = strings.Trim(c.FormValue("name"), " ")
 
 		valueStr := c.FormValue("lambda") // This is a string.
-		value, err := strconv.ParseFloat(valueStr, 32)
+		value, err := strconv.ParseFloat(valueStr, 64)
 		if err != nil {
 			fm["message"] = fmt.Sprintf("something went wrong: %s", err)
 			return flash.WithError(c, fm).Redirect("/material/list")
 		}
-		search.Lambda = float32(value)
+		search.Lambda = float64(value)
 
 		valuePriceStr := c.FormValue("price") // This is a string.
-		value, err = strconv.ParseFloat(valuePriceStr, 32)
+		value, err = strconv.ParseFloat(valuePriceStr, 64)
 		if err != nil {
 			fm["message"] = fmt.Sprintf("something went wrong: %s", err)
 			return flash.WithError(c, fm).Redirect("/material/list")
 		}
-		search.Price = float32(value)
+		search.Price = float64(value)
 
 		material := new(models.Material)
 
@@ -243,4 +245,95 @@ func HandleDeleteMaterial(c *fiber.Ctx) error {
 	}
 
 	return flash.WithSuccess(c, fm).Redirect("/material/list", fiber.StatusSeeOther)
+}
+
+// HandleInsulationCalculatorPage renders the insulation calculator page
+// func HandleInsulationCalculatorPage(c *fiber.Ctx) error {
+// 	materials, err := models.LoadMaterialsFromTOML("./assets/data/materials.toml")
+// 	if err != nil {
+// 		return c.Status(fiber.StatusInternalServerError).SendString("Error loading materials: " + err.Error())
+// 	}
+// 	// no clue how to finish this // TODO
+// 	return adaptor.HTTPHandlerFunc(material_views.InsulationCalculatorPage(materials))()
+// }
+
+func HandleInsulationCalculatorPage(c *fiber.Ctx) error {
+	materials, err := models.LoadMaterialsFromTOML("./assets/data/materials.toml")
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).SendString("Error loading materials: " + err.Error())
+	}
+
+	handler := adaptor.HTTPHandler(templ.Handler(material_views.InsulationCalculatorPage(materials)))
+
+	return handler(c)
+}
+
+// HandleCalculateInsulation handles the insulation calculation request
+func HandleCalculateInsulation(c *fiber.Ctx) error {
+	// Parse input parameters
+	wallType := c.FormValue("wall-type")
+	desiredUValue, err := strconv.ParseFloat(c.FormValue("desired-u-value"), 64)
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).SendString("Invalid desired U-value")
+	}
+
+	// Get selected materials
+	materialIDs := c.FormValue("insulation-materials")
+	materials, err := models.GetMaterialsByIDs(materialIDs)
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).SendString("Error fetching materials: " + err.Error())
+	}
+
+	// Perform optimization
+	result := optimizeInsulation(wallType, desiredUValue, materials)
+
+	// Render the result using the templ component
+	return material_views.InsulationResult(result).Render(c.Context(), c.Response().BodyWriter())
+}
+
+func optimizeInsulation(wallType string, desiredUValue float64, materials []models.Material) models.InsulationResult {
+	result := models.InsulationResult{
+		Layers:      []models.InsulationLayer{},
+		TotalUValue: math.Inf(1),
+		TotalCost:   0,
+	}
+
+	// Sort materials by their insulation efficiency (lambda)
+	sort.Slice(materials, func(i, j int) bool {
+		return materials[i].Lambda < materials[j].Lambda
+	})
+
+	currentUValue := 0.0
+	for currentUValue < desiredUValue {
+		bestMaterial := materials[0]
+		bestThickness := 0.0
+		bestCost := math.Inf(1)
+
+		for _, material := range materials {
+			thickness := calculateRequiredThickness(material.Lambda, desiredUValue-currentUValue)
+			cost := thickness * material.Price / 1000 // Assuming price is per m³ and thickness is in mm
+
+			if cost < bestCost {
+				bestMaterial = material
+				bestThickness = thickness
+				bestCost = cost
+			}
+		}
+
+		layer := models.InsulationLayer{
+			Material:  bestMaterial,
+			Thickness: bestThickness,
+			UValue:    1 / (bestThickness / 1000 / bestMaterial.Lambda),
+		}
+		result.Layers = append(result.Layers, layer)
+		result.TotalCost += bestCost
+		currentUValue += layer.UValue
+	}
+
+	result.TotalUValue = currentUValue
+	return result
+}
+
+func calculateRequiredThickness(lambda, targetUValue float64) float64 {
+	return 1 / (targetUValue * lambda) * 1000 // Convert to mm
 }
