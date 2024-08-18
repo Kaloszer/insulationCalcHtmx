@@ -75,10 +75,21 @@ templ MaterialList(
         page string,
         fromProtected bool,
         msg fiber.Map,
-		username string,
+        username string,
         cmp templ.Component,
     ) {
-	@views.Layout(page, fromProtected, msg, username) {
-		@cmp
-	}
+    @views.Layout(page, fromProtected, msg, username) {
+        if msg != nil {
+            if msg["type"] == "success" {
+                <div class="alert alert-success">
+                    { msg["message"].(string) }
+                </div>
+            } else if msg["type"] == "error" {
+                <div class="alert alert-error">
+                    { msg["message"].(string) }
+                </div>
+            }
+        }
+        @cmp
+    }
 }

@@ -22,14 +22,54 @@ import (
 // HandleViewMaterialCreatePage handler
 func HandleViewMaterialCreatePage(c *fiber.Ctx) error {
 	if c.Method() == "POST" {
-		return c.Redirect("/material/list")
+		lambda, err := strconv.ParseFloat(c.FormValue("lambda"), 64)
+		if err != nil {
+			return flash.WithError(c, fiber.Map{
+				"error":   true,
+				"message": "Invalid lambda value",
+			}).Redirect("/material/create")
+		}
+		price, err := strconv.ParseFloat(c.FormValue("price"), 64)
+		if err != nil {
+			return flash.WithError(c, fiber.Map{
+				"error":   true,
+				"message": "Invalid price value",
+			}).Redirect("/material/create")
+		}
+
+		material := models.Material{
+			CreatedBy:   c.Locals("userId").(uint64),
+			Name:        c.FormValue("name"),
+			Lambda:      lambda,
+			Price:       price,
+			Description: c.FormValue("description"),
+		}
+
+		err = models.AddMaterial(material)
+		if err != nil {
+			return c.Status(fiber.StatusBadRequest).SendString(fmt.Sprintf(
+				`<div id="result" class="alert alert-error">Error creating material: %s</div>`,
+				err.Error(),
+			))
+		}
+
+		// Set a flash message for success
+		flash.WithSuccess(c, fiber.Map{
+			"success": true,
+			"message": "Material created successfully!",
+		})
+
+		// Redirect to the materials list page
+		return c.SendString(`
+            <div id="result" hx-get="/material/list" hx-trigger="load" hx-target="body" hx-push-url="true"></div>
+        `)
 	}
 
 	w := tabwriter.NewWriter(os.Stdout, 0, 0, 1, ' ', tabwriter.Debug)
 	table := tablewriter.NewWriter(w)
 	table.SetHeader([]string{"Name", "Lambda", "Price", "Description"})
 
-	materials, err := models.LoadMaterialsFromTOML("materials.toml")
+	materials, err := models.GetAllMaterials()
 	if err != nil {
 		log.Printf("Error reading materials from TOML file: %v", err)
 		return flash.WithError(c, fiber.Map{
@@ -241,7 +281,7 @@ func HandleDeleteMaterial(c *fiber.Ctx) error {
 
 	fm = fiber.Map{
 		"type":    "success",
-		"message": "Task successfully deleted!!",
+		"message": "Material successfully deleted!!",
 	}
 
 	return flash.WithSuccess(c, fm).Redirect("/material/list", fiber.StatusSeeOther)

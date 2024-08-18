@@ -157,6 +157,46 @@ func GetMaterialsByIDs(ids string) ([]Material, error) {
 	return materials, nil
 }
 
+func AddMaterial(material Material) error {
+
+	stmt := `INSERT INTO materials (created_by, name, lambda, price, thickness, description)
+		VALUES(?, ?, ?, ?, ?, ?);`
+
+	log.Println(stmt, material.CreatedBy, material.Name, material.Lambda, material.Price, material.Thickness, material.Description)
+
+	_, err := db.Exec(stmt, material.CreatedBy, material.Name, material.Lambda, material.Price, material.Thickness, material.Description)
+
+	if err != nil {
+		return fmt.Errorf("error adding material: %w", err)
+	}
+
+	return nil
+}
+
+func GetAllMaterials() ([]Material, error) {
+
+	stmt := `SELECT id, created_by, name, description, lambda, price, thickness FROM materials;`
+	log.Println(stmt)
+	rows, err := db.Query(stmt)
+	if err != nil {
+		return nil, fmt.Errorf("error querying materials: %w", err)
+	}
+	defer rows.Close()
+
+	var materials []Material
+
+	for rows.Next() {
+		var m Material
+		err := rows.Scan(&m.ID, &m.CreatedBy, &m.Name, &m.Description, &m.Lambda, &m.Price, &m.Thickness)
+		if err != nil {
+			return nil, fmt.Errorf("error scanning material row: %w", err)
+		}
+		materials = append(materials, m)
+	}
+
+	return materials, nil
+}
+
 /*
 https://noties.io/blog/2019/08/19/sqlite-toggle-boolean/index.html
 */

@@ -5,55 +5,71 @@ import (
 	"github.com/kaloszer/insulationCalcHtmx/views"
 )
 
+
 templ CreateIndex() {
 	<h1 class="text-2xl font-bold text-center mb-8">
-		Enter Task
+		Enter material information
 	</h1>
 	<section class="max-w-2xl w-4/5 h-96 mx-auto bg-slate-600 rounded-lg shadow-xl">
-		<form class="rounded-xl flex flex-col gap-4 w-11/12 p-4 mx-auto" action="" method="post" hx-swap="transition:true">
+		<form id="materialForm" class="rounded-xl flex flex-col gap-4 w-11/12 p-4 mx-auto" 
+			hx-post="/material/create" 
+			hx-target="#result"
+			hx-swap="outerHTML"
+			hx-validate="true"
+			hx-indicator="#spinner"
+		>
 			<label class="flex flex-col justify-start gap-2">
-				Title:
+				Name:
 				<input
- 					class="input input-bordered input-primary bg-slate-800"
- 					type="text"
- 					name="title"
- 					required
- 					autofocus
- 					minlength="3"
- 					maxlength="64"
+					class="input input-bordered input-primary bg-slate-800"
+					type="text"
+					name="name"
+					required
+					autofocus
+					minlength="3"
+					maxlength="64"
 				/>
 			</label>
 			<label class="flex flex-col justify-start gap-2">
 				Description:
 				<textarea
- 					class="textarea textarea-primary h-36 max-h-36 bg-slate-800"
- 					name="description"
- 					maxlength="255"
+					class="textarea textarea-primary h-36 max-h-36 bg-slate-800"
+					name="description"
+					maxlength="255"
 				></textarea>
 			</label>
 			<label class="flex flex-col justify-start gap-2">
 				Lambda:
-				<textarea
-					class="textarea textarea-primary h-36 max-h-36 bg-slate-800"
+				<input
+					class="input input-bordered input-primary bg-slate-800"
+					type="number"
 					name="lambda"
-					minlength="1"
-					maxlength="5"
+					required
+					min="0.001"
+					max="1"
+					step="0.001"
 					placeholder="0.019"
-				></textarea>
+				/>
 			</label>
 			<label class="flex flex-col justify-start gap-2">
 				Price:
-				<textarea
-					class="textarea textarea-primary h-36 max-h-36 bg-slate-800"
+				<input
+					class="input input-bordered input-primary bg-slate-800"
+					type="number"
 					name="price"
-					minlength="1"
-					maxlength="10"
+					required
+					min="0.01"
+					max="100"
+					step="0.01"
 					placeholder="21.37"
-					description="Price per square meter"
-				></textarea>
+				/>
+				<span class="text-sm text-gray-400">Price per square meter</span>
 			</label>
 			<footer class="card-actions flex gap-4 justify-end">
-				<button class="badge badge-primary p-4 hover:scale-[1.1]">
+				<button
+					class="badge badge-neutral p-4 hover:scale-[1.1]"
+					type="submit"
+				>
 					Save
 				</button>
 				<a href="/material/list" class="badge badge-neutral p-4 hover:scale-[1.1]">
@@ -61,6 +77,10 @@ templ CreateIndex() {
 				</a>
 			</footer>
 		</form>
+		<div id="result"></div>
+		<div id="spinner" class="htmx-indicator">
+			Loading...
+		</div>
 	</section>
 }
 
