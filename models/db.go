@@ -74,6 +74,7 @@ func MakeMigrations() {
 		price REAL NOT NULL,
 		thickness REAL NOT NULL,
 		description VARCHAR(255) NULL,
+		type VARCHAR(64) NOT NULL,
 		FOREIGN KEY(created_by) REFERENCES users(id)
 	);`
 
@@ -88,11 +89,11 @@ func MakeMigrations() {
 		log.Fatal(err)
 	}
 
-	stmt = `INSERT INTO materials (created_by, name, lambda, price, thickness, description)
-		VALUES(?, ?, ?, ?, ?, ?);`
+	stmt = `INSERT INTO materials (created_by, name, lambda, price, thickness, description, type)
+		VALUES(?, ?, ?, ?, ?, ?, ?);`
 
 	for _, material := range materials {
-		_, err = db.Exec(stmt, material.CreatedBy, material.Name, material.Lambda, material.Price, material.Thickness, material.Description)
+		_, err = db.Exec(stmt, material.CreatedBy, material.Name, material.Lambda, material.Price, material.Thickness, material.Description, material.Type)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -113,45 +114,29 @@ func MakeMigrations() {
 	}
 }
 
-func GetMaterialsByIDs(ids string) ([]Material, error) {
-	getConnection()
+func GetMaterialsByIDs(ids []string) ([]Material, error) {
+	query := `SELECT id, created_by, name, description, lambda, price, thickness, type FROM materials WHERE id IN (?` + strings.Repeat(",?", len(ids)-1) + `)`
 
-	// Split the ids string into a slice of strings
-	idSlice := strings.Split(ids, ",")
-
-	// Create a slice of interface{} to hold the id values
-	args := make([]interface{}, len(idSlice))
-	for i, id := range idSlice {
+	// Convert []string to []interface{}
+	args := make([]interface{}, len(ids))
+	for i, id := range ids {
 		args[i] = id
 	}
 
-	// Create a parameterized query with the correct number of placeholders
-	query := fmt.Sprintf("SELECT id, created_by, name, description, lambda, price, thickness FROM materials WHERE id IN (%s)",
-		strings.Join(strings.Split(strings.Repeat("?", len(idSlice)), ""), ","))
-
-	// Execute the query
 	rows, err := db.Query(query, args...)
 	if err != nil {
 		return nil, fmt.Errorf("error querying materials: %w", err)
 	}
 	defer rows.Close()
 
-	// Slice to hold the results
 	var materials []Material
-
-	// Iterate over the rows and scan the results into Material structs
 	for rows.Next() {
 		var m Material
-		err := rows.Scan(&m.ID, &m.CreatedBy, &m.Name, &m.Description, &m.Lambda, &m.Price, &m.Thickness)
+		err := rows.Scan(&m.ID, &m.CreatedBy, &m.Name, &m.Description, &m.Lambda, &m.Price, &m.Thickness, &m.Type)
 		if err != nil {
 			return nil, fmt.Errorf("error scanning material row: %w", err)
 		}
 		materials = append(materials, m)
-	}
-
-	// Check for errors from iterating over rows
-	if err := rows.Err(); err != nil {
-		return nil, fmt.Errorf("error iterating over material rows: %w", err)
 	}
 
 	return materials, nil
@@ -159,12 +144,12 @@ func GetMaterialsByIDs(ids string) ([]Material, error) {
 
 func AddMaterial(material Material) error {
 
-	stmt := `INSERT INTO materials (created_by, name, lambda, price, thickness, description)
-		VALUES(?, ?, ?, ?, ?, ?);`
+	stmt := `INSERT INTO materials (created_by, name, lambda, price, thickness, description, type)
+		VALUES(?, ?, ?, ?, ?, ?, ?);`
 
-	log.Println(stmt, material.CreatedBy, material.Name, material.Lambda, material.Price, material.Thickness, material.Description)
+	log.Println(stmt, material.CreatedBy, material.Name, material.Lambda, material.Price, material.Thickness, material.Description, material.Type)
 
-	_, err := db.Exec(stmt, material.CreatedBy, material.Name, material.Lambda, material.Price, material.Thickness, material.Description)
+	_, err := db.Exec(stmt, material.CreatedBy, material.Name, material.Lambda, material.Price, material.Thickness, material.Description, material.Type)
 
 	if err != nil {
 		return fmt.Errorf("error adding material: %w", err)
@@ -175,7 +160,7 @@ func AddMaterial(material Material) error {
 
 func GetAllMaterials() ([]Material, error) {
 
-	stmt := `SELECT id, created_by, name, description, lambda, price, thickness FROM materials;`
+	stmt := `SELECT id, created_by, name, description, lambda, price, thickness, type FROM materials;`
 	log.Println(stmt)
 	rows, err := db.Query(stmt)
 	if err != nil {
@@ -187,7 +172,7 @@ func GetAllMaterials() ([]Material, error) {
 
 	for rows.Next() {
 		var m Material
-		err := rows.Scan(&m.ID, &m.CreatedBy, &m.Name, &m.Description, &m.Lambda, &m.Price, &m.Thickness)
+		err := rows.Scan(&m.ID, &m.CreatedBy, &m.Name, &m.Description, &m.Lambda, &m.Price, &m.Thickness, &m.Type)
 		if err != nil {
 			return nil, fmt.Errorf("error scanning material row: %w", err)
 		}

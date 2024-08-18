@@ -16,6 +16,7 @@ type Material struct {
 	Lambda      float64 `json:"lambda" toml:"lambda"`
 	Price       float64 `json:"price,omitempty" toml:"price"`
 	Thickness   float64 `json:"thickness" toml:"thickness"`
+	Type        string  `json:"type" toml:"type"`
 }
 
 // New structs for insulation calculation

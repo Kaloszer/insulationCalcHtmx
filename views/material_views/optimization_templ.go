@@ -66,7 +66,7 @@ func InsulationCalculatorPage(materials []models.Material) templ.Component {
 	})
 }
 
-func InsulationCalculator(materials []models.Material) templ.Component {
+func WallVisualization(result models.InsulationResult) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templruntime.GetBuffer(templ_7745c5c3_W)
@@ -84,43 +84,189 @@ func InsulationCalculator(materials []models.Material) templ.Component {
 			templ_7745c5c3_Var3 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<form hx-post=\"/material/calculate-insulation\" hx-target=\"#result\" class=\"space-y-6\"><div><label for=\"wall-type\" class=\"block text-sm font-medium text-gray-700\">Wall Type</label> <select id=\"wall-type\" name=\"wall-type\" class=\"mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50\"><option value=\"solid\">Solid</option> <option value=\"hollow\">Hollow (stud walls)</option> <option value=\"sandwich\">Sandwich</option></select></div><div id=\"solid-inputs\" class=\"space-y-4\"><div><label for=\"solid-lambda\" class=\"block text-sm font-medium text-gray-700\">Lambda (W/mK)</label> <input type=\"number\" id=\"solid-lambda\" name=\"solid-lambda\" step=\"0.001\" class=\"mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50\"></div><div><label for=\"solid-thickness\" class=\"block text-sm font-medium text-gray-700\">Thickness (mm)</label> <input type=\"number\" id=\"solid-thickness\" name=\"solid-thickness\" class=\"mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50\"></div></div><div><label for=\"insulation-materials\" class=\"block text-sm font-medium text-gray-700\">Insulation Materials</label> <select id=\"insulation-materials\" name=\"insulation-materials\" multiple class=\"mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50\">")
+		templ_7745c5c3_Err = layerVisualization(result.Layers).Render(ctx, templ_7745c5c3_Buffer)
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Err = uValueScale(result.TotalUValue).Render(ctx, templ_7745c5c3_Buffer)
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		return templ_7745c5c3_Err
+	})
+}
+
+func layerVisualization(layers []models.InsulationLayer) templ.Component {
+	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
+		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
+		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templruntime.GetBuffer(templ_7745c5c3_W)
+		if !templ_7745c5c3_IsBuffer {
+			defer func() {
+				templ_7745c5c3_BufErr := templruntime.ReleaseBuffer(templ_7745c5c3_Buffer)
+				if templ_7745c5c3_Err == nil {
+					templ_7745c5c3_Err = templ_7745c5c3_BufErr
+				}
+			}()
+		}
+		ctx = templ.InitializeContext(ctx)
+		templ_7745c5c3_Var4 := templ.GetChildren(ctx)
+		if templ_7745c5c3_Var4 == nil {
+			templ_7745c5c3_Var4 = templ.NopComponent
+		}
+		ctx = templ.ClearChildren(ctx)
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"relative h-64 w-full border border-gray-300\">")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		for i, layer := range layers {
+			templ_7745c5c3_Err = templ.Raw(generateLayerDiv(layer, i, layers)).Render(ctx, templ_7745c5c3_Buffer)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div>")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		return templ_7745c5c3_Err
+	})
+}
+
+func uValueScale(totalUValue float64) templ.Component {
+	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
+		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
+		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templruntime.GetBuffer(templ_7745c5c3_W)
+		if !templ_7745c5c3_IsBuffer {
+			defer func() {
+				templ_7745c5c3_BufErr := templruntime.ReleaseBuffer(templ_7745c5c3_Buffer)
+				if templ_7745c5c3_Err == nil {
+					templ_7745c5c3_Err = templ_7745c5c3_BufErr
+				}
+			}()
+		}
+		ctx = templ.InitializeContext(ctx)
+		templ_7745c5c3_Var5 := templ.GetChildren(ctx)
+		if templ_7745c5c3_Var5 == nil {
+			templ_7745c5c3_Var5 = templ.NopComponent
+		}
+		ctx = templ.ClearChildren(ctx)
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"relative h-8 w-full mt-4 bg-gray-200\">")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		for _, uValue := range []float64{0.1, 0.15, 0.2, 0.4} {
+			templ_7745c5c3_Err = templ.Raw(generateUValueMarker(uValue)).Render(ctx, templ_7745c5c3_Buffer)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+		}
+		templ_7745c5c3_Err = templ.Raw(generateTotalUValueMarker(totalUValue)).Render(ctx, templ_7745c5c3_Buffer)
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div>")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		return templ_7745c5c3_Err
+	})
+}
+
+func InsulationCalculator(materials []models.Material) templ.Component {
+	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
+		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
+		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templruntime.GetBuffer(templ_7745c5c3_W)
+		if !templ_7745c5c3_IsBuffer {
+			defer func() {
+				templ_7745c5c3_BufErr := templruntime.ReleaseBuffer(templ_7745c5c3_Buffer)
+				if templ_7745c5c3_Err == nil {
+					templ_7745c5c3_Err = templ_7745c5c3_BufErr
+				}
+			}()
+		}
+		ctx = templ.InitializeContext(ctx)
+		templ_7745c5c3_Var6 := templ.GetChildren(ctx)
+		if templ_7745c5c3_Var6 == nil {
+			templ_7745c5c3_Var6 = templ.NopComponent
+		}
+		ctx = templ.ClearChildren(ctx)
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<form hx-post=\"/material/calculate-insulation\" hx-target=\"#result\" class=\"space-y-6\"><div><label for=\"base-wall\" class=\"block text-sm font-medium text-gray-700\">Base Wall</label> <select id=\"base-wall\" name=\"wall-type\" class=\"mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		for _, material := range materials {
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<option value=\"")
-			if templ_7745c5c3_Err != nil {
-				return templ_7745c5c3_Err
-			}
-			var templ_7745c5c3_Var4 string
-			templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprint(material.ID))
-			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/material_views/optimization.templ`, Line: 45, Col: 44}
-			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var4))
-			if templ_7745c5c3_Err != nil {
-				return templ_7745c5c3_Err
-			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\">")
-			if templ_7745c5c3_Err != nil {
-				return templ_7745c5c3_Err
-			}
-			var templ_7745c5c3_Var5 string
-			templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.JoinStringErrs(material.Name)
-			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/material_views/optimization.templ`, Line: 45, Col: 62}
-			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var5))
-			if templ_7745c5c3_Err != nil {
-				return templ_7745c5c3_Err
-			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</option>")
-			if templ_7745c5c3_Err != nil {
-				return templ_7745c5c3_Err
+			if material.Type == "wall" {
+				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<option value=\"")
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+				var templ_7745c5c3_Var7 string
+				templ_7745c5c3_Var7, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprint(material.ID))
+				if templ_7745c5c3_Err != nil {
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/material_views/optimization.templ`, Line: 49, Col: 63}
+				}
+				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var7))
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\">")
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+				var templ_7745c5c3_Var8 string
+				templ_7745c5c3_Var8, templ_7745c5c3_Err = templ.JoinStringErrs(material.Name)
+				if templ_7745c5c3_Err != nil {
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/material_views/optimization.templ`, Line: 49, Col: 81}
+				}
+				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var8))
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</option>")
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
 			}
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</select></div><div id=\"hollow-additional\" class=\"hidden\"><button type=\"button\" class=\"px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50\">Enable Additional Insulation</button></div><div><label for=\"desired-u-value\" class=\"block text-sm font-medium text-gray-700\">Desired U-Value (W/m²K)</label> <input type=\"number\" id=\"desired-u-value\" name=\"desired-u-value\" value=\"0.02\" step=\"0.01\" class=\"mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50\"></div><button type=\"submit\" class=\"w-full px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-50\">Calculate Optimal Insulation</button></form><div id=\"result\" class=\"mt-8\"><!-- Results will be loaded here via HTMX --></div><script>\r\n\t\tdocument.getElementById('wall-type').addEventListener('change', function() {\r\n\t\t\tvar solidInputs = document.getElementById('solid-inputs');\r\n\t\t\tvar hollowAdditional = document.getElementById('hollow-additional');\r\n\t\t\t\r\n\t\t\tif (this.value === 'solid') {\r\n\t\t\t\tsolidInputs.classList.remove('hidden');\r\n\t\t\t\thollowAdditional.classList.add('hidden');\r\n\t\t\t} else if (this.value === 'hollow') {\r\n\t\t\t\tsolidInputs.classList.add('hidden');\r\n\t\t\t\thollowAdditional.classList.remove('hidden');\r\n\t\t\t} else {\r\n\t\t\t\tsolidInputs.classList.add('hidden');\r\n\t\t\t\thollowAdditional.classList.add('hidden');\r\n\t\t\t}\r\n\t\t});\r\n\t</script>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</select></div><div><label for=\"insulation-materials\" class=\"block text-sm font-medium text-gray-700\">Insulation Materials (up to 3)</label> <select id=\"insulation-materials\" name=\"insulation-materials\" multiple class=\"mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50\">")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		for _, material := range materials {
+			if material.Type == "insulation" {
+				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<option value=\"")
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+				var templ_7745c5c3_Var9 string
+				templ_7745c5c3_Var9, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprint(material.ID))
+				if templ_7745c5c3_Err != nil {
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/material_views/optimization.templ`, Line: 60, Col: 63}
+				}
+				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var9))
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\">")
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+				var templ_7745c5c3_Var10 string
+				templ_7745c5c3_Var10, templ_7745c5c3_Err = templ.JoinStringErrs(material.Name)
+				if templ_7745c5c3_Err != nil {
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/material_views/optimization.templ`, Line: 60, Col: 81}
+				}
+				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var10))
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</option>")
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+			}
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</select></div><div><label for=\"desired-u-value\" class=\"block text-sm font-medium text-gray-700\">Desired U-Value (W/m²K)</label> <input type=\"number\" id=\"desired-u-value\" name=\"desired-u-value\" value=\"0.2\" step=\"0.01\" min=\"0.1\" max=\"0.4\" class=\"mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50\"></div><button type=\"submit\" class=\"w-full px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-50\">Calculate Optimal Insulation</button></form><div id=\"result\" class=\"mt-8\"><!-- Results will be loaded here via HTMX --></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -141,12 +287,20 @@ func InsulationResult(result models.InsulationResult) templ.Component {
 			}()
 		}
 		ctx = templ.InitializeContext(ctx)
-		templ_7745c5c3_Var6 := templ.GetChildren(ctx)
-		if templ_7745c5c3_Var6 == nil {
-			templ_7745c5c3_Var6 = templ.NopComponent
+		templ_7745c5c3_Var11 := templ.GetChildren(ctx)
+		if templ_7745c5c3_Var11 == nil {
+			templ_7745c5c3_Var11 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"bg-gray-100 p-6 rounded-lg shadow\"><h2 class=\"text-xl font-semibold mb-4\">Optimal Insulation Configuration</h2><div class=\"flex space-x-4\"><div class=\"w-1/2\"><h3 class=\"text-lg font-medium mb-2\">Wall Visualization</h3><div class=\"border border-gray-300 p-4 h-64 relative\"><!-- Wall visualization goes here --></div></div><div class=\"w-1/2\"><h3 class=\"text-lg font-medium mb-2\">Insulation Details</h3><ul class=\"space-y-2\">")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"bg-gray-100 p-6 rounded-lg shadow\"><h2 class=\"text-xl font-semibold mb-4\">Optimal Insulation Configuration</h2><div class=\"space-y-4\"><div><h3 class=\"text-lg font-medium mb-2\">Wall Visualization</h3>")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Err = WallVisualization(result).Render(ctx, templ_7745c5c3_Buffer)
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div><div><h3 class=\"text-lg font-medium mb-2\">Insulation Details</h3><ul class=\"space-y-2\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -155,25 +309,12 @@ func InsulationResult(result models.InsulationResult) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			var templ_7745c5c3_Var7 string
-			templ_7745c5c3_Var7, templ_7745c5c3_Err = templ.JoinStringErrs(layer.Material.Name)
+			var templ_7745c5c3_Var12 string
+			templ_7745c5c3_Var12, templ_7745c5c3_Err = templ.JoinStringErrs(layer.Material.Name)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/material_views/optimization.templ`, Line: 104, Col: 34}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/material_views/optimization.templ`, Line: 94, Col: 55}
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var7))
-			if templ_7745c5c3_Err != nil {
-				return templ_7745c5c3_Err
-			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</span> <span>")
-			if templ_7745c5c3_Err != nil {
-				return templ_7745c5c3_Err
-			}
-			var templ_7745c5c3_Var8 string
-			templ_7745c5c3_Var8, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("%.2f mm", layer.Thickness))
-			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/material_views/optimization.templ`, Line: 105, Col: 54}
-			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var8))
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var12))
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -181,12 +322,25 @@ func InsulationResult(result models.InsulationResult) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			var templ_7745c5c3_Var9 string
-			templ_7745c5c3_Var9, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("U-value: %.4f W/m²K", layer.UValue))
+			var templ_7745c5c3_Var13 string
+			templ_7745c5c3_Var13, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("%.2f mm", layer.Thickness))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/material_views/optimization.templ`, Line: 106, Col: 64}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/material_views/optimization.templ`, Line: 95, Col: 75}
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var9))
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var13))
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</span> <span>")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			var templ_7745c5c3_Var14 string
+			templ_7745c5c3_Var14, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("U-value: %.4f W/m²K", 1/(layer.Thickness/1000/layer.Material.Lambda)))
+			if templ_7745c5c3_Err != nil {
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/material_views/optimization.templ`, Line: 96, Col: 119}
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var14))
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -199,12 +353,12 @@ func InsulationResult(result models.InsulationResult) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		var templ_7745c5c3_Var10 string
-		templ_7745c5c3_Var10, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("%.4f W/m²K", result.TotalUValue))
+		var templ_7745c5c3_Var15 string
+		templ_7745c5c3_Var15, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("%.4f W/m²K", result.TotalUValue))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/material_views/optimization.templ`, Line: 110, Col: 97}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/material_views/optimization.templ`, Line: 100, Col: 109}
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var10))
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var15))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -212,12 +366,12 @@ func InsulationResult(result models.InsulationResult) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		var templ_7745c5c3_Var11 string
-		templ_7745c5c3_Var11, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("$%.2f", result.TotalCost))
+		var templ_7745c5c3_Var16 string
+		templ_7745c5c3_Var16, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("$%.2f", result.TotalCost))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/material_views/optimization.templ`, Line: 111, Col: 59}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/material_views/optimization.templ`, Line: 101, Col: 71}
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var11))
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var16))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -227,4 +381,65 @@ func InsulationResult(result models.InsulationResult) templ.Component {
 		}
 		return templ_7745c5c3_Err
 	})
+}
+
+func getColorForLayer(index int) string {
+	colors := []string{"#FF0000", "#00FF00", "#0000FF", "#FFFF00"}
+	return colors[index%len(colors)]
+}
+
+func getOffsetForLayer(index int, layers []models.InsulationLayer) float64 {
+	offset := 0.0
+	for i := 0; i < index; i++ {
+		offset += layers[i].Thickness
+	}
+	return offset / getTotalThickness(layers) * 100
+}
+
+func getTotalThickness(layers []models.InsulationLayer) float64 {
+	total := 0.0
+	for _, layer := range layers {
+		total += layer.Thickness
+	}
+	return total
+}
+
+func generateLayerDiv(layer models.InsulationLayer, index int, layers []models.InsulationLayer) string {
+	return fmt.Sprintf(`
+        <div
+            class="absolute bottom-0 left-0 h-full"
+            style="width: %.2f%%; background-color: %s; left: %.2f%%"
+        >
+            <span class="absolute top-0 left-0 p-1 text-xs text-white">%s</span>
+            <span class="absolute bottom-0 left-0 p-1 text-xs text-white">%.2f mm</span>
+        </div>
+    `,
+		layer.Thickness/getTotalThickness(layers)*100,
+		getColorForLayer(index),
+		getOffsetForLayer(index, layers),
+		layer.Material.Name,
+		layer.Thickness)
+}
+
+func generateUValueMarker(uValue float64) string {
+	return fmt.Sprintf(`
+        <div
+            class="absolute top-0 h-full border-l border-gray-400"
+            style="left: %.2f%%"
+        >
+            <span class="absolute bottom-full mb-1 text-xs transform -translate-x-1/2">%.2f</span>
+        </div>
+    `,
+		(uValue-0.1)/(0.4-0.1)*100,
+		uValue)
+}
+
+func generateTotalUValueMarker(totalUValue float64) string {
+	return fmt.Sprintf(`
+        <div
+            class="absolute top-0 h-full w-1 bg-red-500"
+            style="left: %.2f%%"
+        ></div>
+    `,
+		(totalUValue-0.1)/(0.4-0.1)*100)
 }

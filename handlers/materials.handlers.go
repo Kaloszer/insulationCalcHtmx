@@ -311,7 +311,7 @@ func HandleInsulationCalculatorPage(c *fiber.Ctx) error {
 // HandleCalculateInsulation handles the insulation calculation request
 func HandleCalculateInsulation(c *fiber.Ctx) error {
 	// Parse input parameters
-	wallType := c.FormValue("wall-type")
+	wallTypeID := c.FormValue("wall-type")
 	desiredUValue, err := strconv.ParseFloat(c.FormValue("desired-u-value"), 64)
 	if err != nil {
 		return c.Status(fiber.StatusBadRequest).SendString("Invalid desired U-value")
@@ -319,19 +319,26 @@ func HandleCalculateInsulation(c *fiber.Ctx) error {
 
 	// Get selected materials
 	materialIDs := c.FormValue("insulation-materials")
-	materials, err := models.GetMaterialsByIDs(materialIDs)
+	materialIDSlice := strings.Split(materialIDs, ",")
+	materials, err := models.GetMaterialsByIDs(materialIDSlice)
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).SendString("Error fetching materials: " + err.Error())
 	}
 
+	// Get wall material
+	wallMaterial, err := models.GetMaterialsByIDs([]string{wallTypeID})
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).SendString("Error fetching wall material: " + err.Error())
+	}
+
 	// Perform optimization
-	result := optimizeInsulation(wallType, desiredUValue, materials)
+	result := optimizeInsulation(wallMaterial[0], desiredUValue, materials)
 
 	// Render the result using the templ component
 	return material_views.InsulationResult(result).Render(c.Context(), c.Response().BodyWriter())
 }
 
-func optimizeInsulation(wallType string, desiredUValue float64, materials []models.Material) models.InsulationResult {
+func optimizeInsulation(material models.Material, desiredUValue float64, materials []models.Material) models.InsulationResult {
 	result := models.InsulationResult{
 		Layers:      []models.InsulationLayer{},
 		TotalUValue: math.Inf(1),

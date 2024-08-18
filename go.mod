@@ -9,6 +9,8 @@ require (
 	github.com/olekukonko/tablewriter v0.0.5
 )
 
+require github.com/go-delve/delve v1.23.0 // indirect
+
 require (
 	github.com/andybalholm/brotli v1.1.0 // indirect
 	github.com/google/uuid v1.4.0 // indirect

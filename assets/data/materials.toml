@@ -8,6 +8,7 @@ description = "Widely used, made from recycled glass and sand. Good for walls, a
 lambda = 0.04
 price = 10.00
 thickness = 0.01
+type = "insulation"
 
 [[insulation]]
 id = 2
@@ -17,6 +18,7 @@ description = "Made from recycled materials and volcanic rock. Excellent sound i
 lambda = 0.037
 price = 10.00
 thickness = 0.01
+type = "insulation"
 
 [[insulation]]
 id = 3
@@ -26,6 +28,7 @@ description = "Made from recycled paper products. Good for retrofitting and blow
 lambda = 0.039
 price = 10.00
 thickness = 0.01
+type = "insulation"
 
 [[insulation]]
 id = 4
@@ -35,6 +38,7 @@ description = "High R-value per inch. Excellent air barrier and moisture control
 lambda = 0.026
 price = 10.00
 thickness = 0.05
+type = "insulation"
 
 [[insulation]]
 id = 5
@@ -44,6 +48,7 @@ description = "Lower density than closed cell. Good for sound reduction and fill
 lambda = 0.038
 price = 10.00
 thickness = 0.01
+type = "insulation"
 
 [[insulation]]
 id = 6
@@ -53,6 +58,7 @@ description = "High compressive strength. Good for below-grade applications and 
 lambda = 0.034
 price = 10.00
 thickness = 0.05
+type = "insulation"
 
 [[insulation]]
 id = 7
@@ -62,6 +68,7 @@ description = "Lightweight and affordable. Commonly used in structural insulated
 lambda = 0.038
 price = 10.00
 thickness = 0.05
+type = "insulation"
 
 [[insulation]]
 id = 8
@@ -71,6 +78,7 @@ description = "High R-value per inch. Often used in commercial roofing and conti
 lambda = 0.022
 price = 10.00
 thickness = 0.05
+type = "insulation"
 
 [[other]]
 id = 9
@@ -80,6 +88,7 @@ description = "Uses reflective foil to reduce radiant heat transfer. Good for at
 lambda = 0.060
 price = 10.00
 thickness = 0.006
+type = "insulation"
 
 [[other]]
 id = 10
@@ -89,6 +98,7 @@ description = "Ultra-lightweight and high-performance. Used where space is at a 
 lambda = 0.014
 price = 10.00
 thickness = 0.01
+type = "insulation"
 
 [[other]]
 id = 11
@@ -98,6 +108,7 @@ description = "Very high R-value per inch. Used in specialized applications wher
 lambda = 0.004
 price = 10.00
 thickness = 0.025
+type = "insulation"
 
 [[wall]]
 id = 12
@@ -107,3 +118,4 @@ description = "Prefabricated panels with insulation sandwiched between two layer
 lambda = 0.037# Varies based on the type of insulation used
 price = 10.00
 thickness = 0.1
+type = "wall"

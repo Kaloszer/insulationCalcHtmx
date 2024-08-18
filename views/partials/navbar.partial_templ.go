@@ -44,7 +44,7 @@ func Navbar(fromProtected bool, username string) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</span> <a hx-swap=\"transition:true\" class=\"btn btn-ghost text-lg\" href=\"/todo/list\">Tasks</a> <a hx-swap=\"transition:true\" class=\"btn btn-ghost text-lg\" href=\"/material/list\">Materials</a> <button hx-swap=\"transition:true\" hx-post=\"/todo/logout\" hx-confirm=\"Are you sure you want to log out?\" hx-target=\"body\" hx-push-url=\"true\" class=\"btn btn-ghost text-lg\">Logout</button>")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</span> <a hx-swap=\"transition:true\" class=\"btn btn-ghost text-lg\" href=\"/todo/list\">Tasks</a> <a hx-swap=\"transition:true\" class=\"btn btn-ghost text-lg\" href=\"/material/list\">Materials</a> <a hx-swap=\"transition:true\" class=\"btn btn-ghost text-lg\" href=\"/material/insulation-calculator\">Optimize</a> <button hx-swap=\"transition:true\" hx-post=\"/todo/logout\" hx-confirm=\"Are you sure you want to log out?\" hx-target=\"body\" hx-push-url=\"true\" class=\"btn btn-ghost text-lg\">Logout</button>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
